@@ -1,0 +1,43 @@
+{
+  "name": "7guis",
+  "version": "1.0.1",
+  "description": "https://7guis.github.io/7guis/tasks",
+  "source": "src/index.html",
+  "browserslist": "defaults",
+  "scripts": {
+    "update": "ncu -u",
+    "serve": "parcel -p 8000 --lazy",
+    "watch": "parcel watch",
+    "build": "rm -rf dist && rm -rf docs && parcel build --no-source-maps --dist-dir docs --public-url=/7guis"
+  },
+  "author": "Luca Bacchi <bacchilu@gmail.com> (https://github.com/bacchilu)",
+  "license": "ISC",
+  "prettier": {
+    "arrowParens": "always",
+    "bracketSpacing": false,
+    "embeddedLanguageFormatting": "auto",
+    "htmlWhitespaceSensitivity": "css",
+    "insertPragma": false,
+    "jsxBracketSameLine": false,
+    "jsxSingleQuote": false,
+    "printWidth": 120,
+    "proseWrap": "preserve",
+    "quoteProps": "as-needed",
+    "requirePragma": false,
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 4,
+    "trailingComma": "es5",
+    "useTabs": false,
+    "vueIndentScriptAndStyle": false
+  },
+  "devDependencies": {
+    "npm-check-updates": "^13.0.3",
+    "parcel": "^2.5.0"
+  },
+  "dependencies": {
+    "big.js": "^6.1.1",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
+  }
+}
