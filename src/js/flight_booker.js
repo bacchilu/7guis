@@ -1,11 +1,20 @@
 import React from 'react';
 
+const toLocaleString = function (d) {
+    return new Date(d).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+};
+
 export const FlightBooker = function () {
     const today = `${new Date().toISOString()}`.split('T')[0];
 
     const [type, setType] = React.useState('SINGLE');
     const [startDate, setStartDate] = React.useState(today);
     const [endDate, setEndDate] = React.useState(today);
+    const [message, setMessage] = React.useState(null);
 
     const onChange = function (e) {
         if (e.target.name === 'type') setType(e.target.value);
@@ -15,11 +24,30 @@ export const FlightBooker = function () {
 
     const onSubmit = function (e) {
         e.preventDefault();
+        const message =
+            type === 'SINGLE'
+                ? `You have booked a one-way flight on ${toLocaleString(startDate)}.`
+                : `You have booked a return-way flight from ${toLocaleString(startDate)} to ${toLocaleString(
+                      endDate
+                  )}.`;
+        setMessage(message);
     };
 
     const isDateValid = function (v) {
         const d = new Date(v);
         return !isNaN(d);
+    };
+
+    const strictlyBefore = function () {
+        console.assert(isDateValid(startDate));
+        console.assert(isDateValid(endDate));
+        return new Date(startDate) < new Date(endDate);
+    };
+
+    const isSubmitEnabled = function () {
+        if (type === 'SINGLE') return isDateValid(startDate);
+        if (type === 'RETURN') return isDateValid(startDate) && isDateValid(endDate) && strictlyBefore();
+        console.assert(false);
     };
 
     return (
@@ -66,11 +94,21 @@ export const FlightBooker = function () {
                         </div>
                     </div>
                     <div className="col-auto">
-                        <button type="submit" className="btn btn-primary mb-3" style={{marginTop: '8px'}}>
+                        <button
+                            type="submit"
+                            className="btn btn-primary mb-3"
+                            style={{marginTop: '8px'}}
+                            disabled={!isSubmitEnabled()}
+                        >
                             Confirm identity
                         </button>
                     </div>
                 </form>
+                {message && (
+                    <div className="alert alert-success" role="alert">
+                        {message}
+                    </div>
+                )}
                 <p className="card-text">
                     This is the{' '}
                     <a href="https://eugenkiss.github.io/7guis/tasks/#flight" target="_blank">
