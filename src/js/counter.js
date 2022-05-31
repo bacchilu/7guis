@@ -27,8 +27,9 @@ export const Counter = function () {
                     <a href="https://eugenkiss.github.io/7guis/tasks/#counter" target="_blank">
                         Counter
                     </a>
-                    . Nothing particular here: this is a classic React test.
+                    .
                 </p>
+                <p className="card-text">Nothing particular here: this is a classic React test.</p>
             </div>
         </div>
     );

@@ -118,7 +118,7 @@ export const FlightBooker = function () {
                     <a href="https://eugenkiss.github.io/7guis/tasks/#flight" target="_blank">
                         Flight Booker
                     </a>
-                    . Nothing particular here: this is a classic React test.
+                    .
                 </p>
             </div>
         </div>

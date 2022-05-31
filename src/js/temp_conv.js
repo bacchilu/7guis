@@ -64,6 +64,21 @@ export const TempConv = function () {
                     </a>
                     .
                 </p>
+                <p className="card-text">
+                    My first idea was to use the inner state of this component as a Single Source of Truth, storing only
+                    one of the two temperatures and deriving the other in real time. Actually this kind of solution
+                    cannot work really well: the state of the component as a whole is a bit more complex than this; for
+                    example when you blank one of the two input the other is not automatically updated.
+                </p>
+                <p className="card-text">
+                    Another problem is the management of floating point numbers. As we know not all "rational numbers"
+                    are always representable in an exact way as JavaScript Number types (floating point numbers). So my
+                    solution is to store the state as strings and using the{' '}
+                    <a href="http://mikemcl.github.io/big.js/" target="_blank">
+                        big.js
+                    </a>{' '}
+                    library to manage the computation.
+                </p>
             </div>
         </div>
     );
