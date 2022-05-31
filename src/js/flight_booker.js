@@ -8,6 +8,14 @@ const toLocaleString = function (d) {
     });
 };
 
+const Message = function ({message}) {
+    return (
+        <div className="alert alert-success" role="alert">
+            {message}
+        </div>
+    );
+};
+
 export const FlightBooker = function () {
     const today = `${new Date().toISOString()}`.split('T')[0];
 
@@ -104,11 +112,7 @@ export const FlightBooker = function () {
                         </button>
                     </div>
                 </form>
-                {message && (
-                    <div className="alert alert-success" role="alert">
-                        {message}
-                    </div>
-                )}
+                {message && <Message message={message} />}
                 <p className="card-text">
                     This is the{' '}
                     <a href="https://eugenkiss.github.io/7guis/tasks/#flight" target="_blank">
