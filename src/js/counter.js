@@ -11,7 +11,11 @@ export const Counter = function () {
     return (
         <div className="card text-bg-light m-4">
             <div className="card-body">
-                <h5 className="card-title">Counter</h5>
+                <h5 className="card-title">
+                    <a href="https://eugenkiss.github.io/7guis/tasks/#counter" target="_blank">
+                        Counter
+                    </a>
+                </h5>
                 <form className="row row-cols-lg-auto m-4">
                     <div>
                         <input className="form-control" value={value} disabled />
@@ -22,13 +26,6 @@ export const Counter = function () {
                         </button>
                     </div>
                 </form>
-                <p className="card-text">
-                    This is the{' '}
-                    <a href="https://eugenkiss.github.io/7guis/tasks/#counter" target="_blank">
-                        Counter
-                    </a>
-                    .
-                </p>
                 <p className="card-text">Nothing particular here: this is a classic React test.</p>
             </div>
         </div>

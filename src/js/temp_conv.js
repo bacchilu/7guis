@@ -28,7 +28,11 @@ export const TempConv = function () {
     return (
         <div className="card text-bg-light m-4">
             <div className="card-body">
-                <h5 className="card-title">Temperature Converter</h5>
+                <h5 className="card-title">
+                    <a href="https://eugenkiss.github.io/7guis/tasks/#temp" target="_blank">
+                        Temperature Converter
+                    </a>
+                </h5>
                 <form className="row row-cols-lg-auto m-4">
                     <div className="col-auto">
                         <div className="form-floating">
@@ -57,13 +61,6 @@ export const TempConv = function () {
                         </div>
                     </div>
                 </form>
-                <p className="card-text">
-                    This is the{' '}
-                    <a href="https://eugenkiss.github.io/7guis/tasks/#temp" target="_blank">
-                        Temperature Converter
-                    </a>
-                    .
-                </p>
                 <p className="card-text">
                     My first idea was to use the inner state of this component as a Single Source of Truth, storing only
                     one of the two temperatures and deriving the other in real time. Actually this kind of solution

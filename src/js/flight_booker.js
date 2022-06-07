@@ -61,7 +61,11 @@ export const FlightBooker = function () {
     return (
         <div className="card text-bg-light m-4">
             <div className="card-body">
-                <h5 className="card-title">Flight Booker</h5>
+                <h5 className="card-title">
+                    <a href="https://eugenkiss.github.io/7guis/tasks/#flight" target="_blank">
+                        Flight Booker
+                    </a>
+                </h5>
                 <form className="row row-cols-lg-auto m-4" onSubmit={onSubmit}>
                     <div className="col-auto">
                         <div className="form-floating">
@@ -108,18 +112,11 @@ export const FlightBooker = function () {
                             style={{marginTop: '8px'}}
                             disabled={!isSubmitEnabled()}
                         >
-                            Confirm identity
+                            Book
                         </button>
                     </div>
                 </form>
                 {message && <Message message={message} />}
-                <p className="card-text">
-                    This is the{' '}
-                    <a href="https://eugenkiss.github.io/7guis/tasks/#flight" target="_blank">
-                        Flight Booker
-                    </a>
-                    .
-                </p>
             </div>
         </div>
     );
