@@ -9,9 +9,16 @@ const toLocaleString = function (d) {
 };
 
 const Message = function ({message}) {
+    const content =
+        message.type === 'SINGLE'
+            ? `You have booked a one-way flight on ${toLocaleString(message.startDate)}.`
+            : `You have booked a return-way flight from ${toLocaleString(message.startDate)} to ${toLocaleString(
+                  message.endDate
+              )}.`;
+
     return (
         <div className="alert alert-success" role="alert">
-            {message}
+            {content}
         </div>
     );
 };
@@ -32,13 +39,7 @@ export const FlightBooker = function () {
 
     const onSubmit = function (e) {
         e.preventDefault();
-        const message =
-            type === 'SINGLE'
-                ? `You have booked a one-way flight on ${toLocaleString(startDate)}.`
-                : `You have booked a return-way flight from ${toLocaleString(startDate)} to ${toLocaleString(
-                      endDate
-                  )}.`;
-        setMessage(message);
+        setMessage({type, startDate, endDate});
     };
 
     const isDateValid = function (v) {
@@ -116,7 +117,7 @@ export const FlightBooker = function () {
                         </button>
                     </div>
                 </form>
-                {message && <Message message={message} />}
+                {message !== null && <Message message={message} />}
             </div>
         </div>
     );
