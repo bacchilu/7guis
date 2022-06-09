@@ -26,11 +26,16 @@ const Message = function ({message, closeMessage}) {
     );
 
     const content =
-        message.type === 'SINGLE'
-            ? `You have booked a one-way flight on ${toLocaleString(message.startDate)}.`
-            : `You have booked a return-way flight from ${toLocaleString(message.startDate)} to ${toLocaleString(
-                  message.endDate
-              )}.`;
+        message.type === 'SINGLE' ? (
+            <span>
+                You have booked a one-way flight on <em>{toLocaleString(message.startDate)}</em>.
+            </span>
+        ) : (
+            <span>
+                You have booked a return-way flight from <em>{toLocaleString(message.startDate)}</em> to{' '}
+                <em>{toLocaleString(message.endDate)}</em>.
+            </span>
+        );
 
     return (
         <div className="alert alert-success" role="alert">
