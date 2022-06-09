@@ -8,7 +8,23 @@ const toLocaleString = function (d) {
     });
 };
 
-const Message = function ({message}) {
+const useTimeout = function (functionRef, delay, dependencies) {
+    const t = React.useRef(null);
+    React.useEffect(function () {
+        clearTimeout(t.current);
+        t.current = setTimeout(functionRef, delay);
+    }, dependencies);
+};
+
+const Message = function ({message, closeMessage}) {
+    useTimeout(
+        function () {
+            closeMessage();
+        },
+        5000,
+        [message]
+    );
+
     const content =
         message.type === 'SINGLE'
             ? `You have booked a one-way flight on ${toLocaleString(message.startDate)}.`
@@ -35,6 +51,10 @@ export const FlightBooker = function () {
         if (e.target.name === 'type') setType(e.target.value);
         if (e.target.name === 'start_date') setStartDate(e.target.value);
         if (e.target.name === 'end_date') setEndDate(e.target.value);
+    };
+
+    const closeMessage = function () {
+        setMessage(null);
     };
 
     const onSubmit = function (e) {
@@ -117,7 +137,7 @@ export const FlightBooker = function () {
                         </button>
                     </div>
                 </form>
-                {message !== null && <Message message={message} />}
+                {message !== null && <Message message={message} closeMessage={closeMessage} />}
             </div>
         </div>
     );
