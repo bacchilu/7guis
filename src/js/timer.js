@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Progress = function ({current, max}) {
-    const width = (100 * current) / max;
+const Progress = function ({current, duration}) {
+    const width = (100 * current) / duration;
 
     return (
         <div className="progress">
@@ -14,7 +14,7 @@ const Progress = function ({current, max}) {
 
 export const Timer = function () {
     const [current, setCurrent] = React.useState(0);
-    const [max, setMax] = React.useState(150);
+    const [duration, setDuration] = React.useState(150);
     const intervalRef = React.useRef(null);
     React.useEffect(function () {
         intervalRef.current = setInterval(function () {
@@ -25,13 +25,17 @@ export const Timer = function () {
     }, []);
     React.useEffect(
         function () {
-            if (current > max) {
+            if (current > duration) {
                 clearInterval(intervalRef.current);
                 intervalRef.current = null;
             }
         },
         [current]
     );
+
+    const changeDuration = function (e) {
+        setDuration(parseInt(e.target.value));
+    };
 
     const resetTimer = function () {
         setCurrent(0);
@@ -54,13 +58,20 @@ export const Timer = function () {
                 <div className="row align-items-start">
                     <div className="col-2">Elapsed Time:</div>
                     <div className="col-10">
-                        <Progress current={current} max={max} />
+                        <Progress current={current} duration={duration} />
                     </div>
                 </div>
                 <div className="row align-items-start">
                     <div className="col-2">Duration:</div>
                     <div className="col-10">
-                        <input type="range" className="form-range" />
+                        <input
+                            type="range"
+                            className="form-range"
+                            min="0"
+                            max="300"
+                            value={duration}
+                            onChange={changeDuration}
+                        />
                     </div>
                 </div>
                 <button className="btn btn-primary" onClick={resetTimer}>
