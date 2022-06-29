@@ -2,10 +2,9 @@ import React from 'react';
 
 const Progress = function ({current, max}) {
     const width = (100 * current) / max;
-    console.log(width);
 
     return (
-        <div class="progress">
+        <div className="progress">
             <div className="progress-bar" style={{width: `${width}%`}}>
                 {current / 10}s
             </div>
@@ -26,11 +25,23 @@ export const Timer = function () {
     }, []);
     React.useEffect(
         function () {
-            if (current > max) clearInterval(intervalRef.current);
+            if (current > max) {
+                clearInterval(intervalRef.current);
+                intervalRef.current = null;
+            }
         },
         [current]
     );
-    console.log(current / 10);
+
+    const resetTimer = function () {
+        setCurrent(0);
+        if (intervalRef.current === null)
+            intervalRef.current = setInterval(function () {
+                setCurrent(function (c) {
+                    return c + 1;
+                });
+            }, 100);
+    };
 
     return (
         <div className="card text-bg-light m-4">
@@ -46,6 +57,15 @@ export const Timer = function () {
                         <Progress current={current} max={max} />
                     </div>
                 </div>
+                <div className="row align-items-start">
+                    <div className="col-2">Duration:</div>
+                    <div className="col-10">
+                        <input type="range" className="form-range" />
+                    </div>
+                </div>
+                <button className="btn btn-primary" onClick={resetTimer}>
+                    Reset Timer
+                </button>
             </div>
         </div>
     );
