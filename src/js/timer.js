@@ -12,9 +12,11 @@ const Progress = function ({current, duration}) {
     );
 };
 
+const MAX_DURATION = 300;
+
 export const Timer = function () {
     const [current, setCurrent] = React.useState(0);
-    const [duration, setDuration] = React.useState(150);
+    const [duration, setDuration] = React.useState(MAX_DURATION / 2);
     const intervalRef = React.useRef(null);
     const resetInterval = function () {
         clearInterval(intervalRef.current);
@@ -27,6 +29,12 @@ export const Timer = function () {
     React.useEffect(function () {
         resetInterval();
     }, []);
+    React.useEffect(
+        function () {
+            if (current >= MAX_DURATION) clearInterval(intervalRef.current);
+        },
+        [current]
+    );
 
     const changeDuration = function (e) {
         setDuration(parseInt(e.target.value));
