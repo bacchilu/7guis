@@ -6,7 +6,7 @@ const Progress = function ({current, duration}) {
     return (
         <div className="progress">
             <div className="progress-bar" style={{width: `${width}%`}}>
-                {(current >= duration ? duration : current) / 10}s
+                {((current >= duration ? duration : current) / 10).toFixed(1).toLocaleString()}s
             </div>
         </div>
     );
@@ -65,8 +65,8 @@ export const Timer = function () {
                         <input
                             type="range"
                             className="form-range"
-                            min="0"
-                            max="300"
+                            min={0}
+                            max={MAX_DURATION}
                             value={duration}
                             onChange={changeDuration}
                         />
