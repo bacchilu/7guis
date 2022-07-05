@@ -1,4 +1,12 @@
+import react from 'react';
+
 export const Crud = function () {
+    const [list, setList] = react.useState([
+        {name: 'Hans', surname: 'Emil'},
+        {name: 'Max', surname: 'Mustermann'},
+        {name: 'Roman', surname: 'Tisch'},
+    ]);
+
     return (
         <div className="card text-bg-light m-4">
             <div className="card-body">
