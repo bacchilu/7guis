@@ -1,12 +1,37 @@
-import react from 'react';
+import React from 'react';
 
 export const Crud = function () {
-    const [list, setList] = react.useState([
-        {name: 'Hans', surname: 'Emil'},
-        {name: 'Max', surname: 'Mustermann'},
-        {name: 'Roman', surname: 'Tisch'},
+    const [filter, setFilter] = React.useState('');
+    const [list, setList] = React.useState([
+        {id: 1, name: 'Hans', surname: 'Emil', selected: true},
+        {id: 2, name: 'Max', surname: 'Mustermann', selected: false},
+        {id: 3, name: 'Roman', surname: 'Tisch', selected: false},
     ]);
 
+    const onFilter = function (e) {
+        setFilter(e.target.value);
+    };
+
+    const listItems = list.map(function (item) {
+        const onClick = function () {
+            setList(
+                list.map(function (e) {
+                    return {...e, selected: item.id === e.id};
+                })
+            );
+        };
+
+        return (
+            <button
+                key={item.id}
+                type="button"
+                className={`list-group-item list-group-item-action${item.selected ? ' active' : ''}`}
+                onClick={onClick}
+            >
+                {item.surname}, {item.name}
+            </button>
+        );
+    });
     return (
         <div className="card text-bg-light m-4">
             <div className="card-body">
@@ -21,7 +46,7 @@ export const Crud = function () {
                             <div className="row mb-3">
                                 <label className="col-sm-3 col-form-label">Filter prefix:</label>
                                 <div className="col-sm-9">
-                                    <input className="form-control" />
+                                    <input className="form-control" value={filter} onChange={onFilter} />
                                 </div>
                             </div>
                         </div>
@@ -29,17 +54,7 @@ export const Crud = function () {
                     </div>
                     <div className="row mb-3">
                         <div className="col">
-                            <div className="list-group">
-                                <button type="button" className="list-group-item list-group-item-action active">
-                                    Emil, Hans
-                                </button>
-                                <button type="button" className="list-group-item list-group-item-action">
-                                    Mustermann, Max
-                                </button>
-                                <button type="button" className="list-group-item list-group-item-action">
-                                    Tisch, Roman
-                                </button>
-                            </div>
+                            <div className="list-group">{listItems}</div>
                         </div>
                         <div className="col">
                             <div className="row mb-3">
