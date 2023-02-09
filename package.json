@@ -32,7 +32,7 @@
     "vueIndentScriptAndStyle": false
   },
   "devDependencies": {
-    "npm-check-updates": "^16.6.3",
+    "npm-check-updates": "^16.6.5",
     "parcel": "^2.8.3",
     "process": "^0.11.10"
   },
