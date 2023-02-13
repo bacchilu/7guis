@@ -2,12 +2,12 @@ import React from 'react';
 
 export const Crud = function () {
     const [db, setDb] = React.useState([
-        {id: 1, name: 'Hans', surname: 'Emil', selected: true},
+        {id: 1, name: 'Hans', surname: 'Emil', selected: false},
         {id: 2, name: 'Max', surname: 'Mustermann', selected: false},
         {id: 3, name: 'Roman', surname: 'Tisch', selected: false},
     ]);
     const [filter, setFilter] = React.useState('');
-    const [currentList, setCurrentList] = React.useState(db);
+    const [currentList, setCurrentList] = React.useState([]);
     const [insertForm, setInsertForm] = React.useState({name: '', surname: ''});
     React.useEffect(() => {
         setCurrentList(
@@ -24,17 +24,31 @@ export const Crud = function () {
         setInsertForm({...insertForm, [e.target.name]: e.target.value});
     };
 
+    const selectedItem = currentList.find((item) => item.selected);
+
     const onCreate = function () {
         const [name, surname] = [insertForm.name.trim(), insertForm.surname.trim()];
+        if (name === '' || surname === '') return;
         if (db.find((item) => item.name === name && item.surname === surname) !== undefined) return;
         setDb([...db, {name, surname, id: db.length + 1, selected: false}]);
+    };
+
+    const onUpdate = function () {
+        const [name, surname] = [insertForm.name.trim(), insertForm.surname.trim()];
+        if (name === '' || surname === '') return;
+        if (db.find((item) => item.name === name && item.surname === surname) !== undefined) return;
+        setDb(db.map((item) => (item.id === selectedItem.id ? {...item, name, surname} : item)));
+    };
+
+    const onDelete = function () {
+        setDb(db.filter((item) => item.id !== selectedItem.id));
     };
 
     const listItems = currentList.map((item) => {
         const onClick = function () {
             setCurrentList(
                 currentList.map(function (e) {
-                    return {...e, selected: item.id === e.id};
+                    return {...e, selected: item.id === e.id && !item.selected};
                 })
             );
         };
@@ -83,6 +97,7 @@ export const Crud = function () {
                                         name="name"
                                         value={insertForm.name}
                                         onChange={onChangeInsertForm}
+                                        autocomplete="off"
                                     />
                                 </div>
                             </div>
@@ -104,10 +119,20 @@ export const Crud = function () {
                             <button type="button" className="btn btn-primary me-3" onClick={onCreate}>
                                 Create
                             </button>
-                            <button type="button" className="btn btn-warning me-3">
+                            <button
+                                type="button"
+                                className="btn btn-warning me-3"
+                                disabled={selectedItem === undefined}
+                                onClick={onUpdate}
+                            >
                                 Update
                             </button>
-                            <button type="button" className="btn btn-danger me-3">
+                            <button
+                                type="button"
+                                className="btn btn-danger me-3"
+                                disabled={selectedItem === undefined}
+                                onClick={onDelete}
+                            >
                                 Delete
                             </button>
                         </div>
