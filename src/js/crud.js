@@ -1,32 +1,28 @@
 import React from 'react';
 
 const DB = [
-    {id: 1, name: 'Hans', surname: 'Emil'},
-    {id: 2, name: 'Max', surname: 'Mustermann'},
-    {id: 3, name: 'Roman', surname: 'Tisch'},
+    {id: 1, name: 'Hans', surname: 'Emil', selected: false},
+    {id: 2, name: 'Max', surname: 'Mustermann', selected: false},
+    {id: 3, name: 'Roman', surname: 'Tisch', selected: false},
 ];
 
 export const Crud = function () {
     const [db, setDb] = React.useState(DB);
     const [textFilter, setTextFilter] = React.useState('');
-    const [currentList, setCurrentList] = React.useState([]);
     const [insertForm, setInsertForm] = React.useState({name: '', surname: ''});
-    React.useEffect(() => {
-        setCurrentList(
-            db.filter((item) => item.surname.toLocaleLowerCase().startsWith(textFilter.trim().toLocaleLowerCase()))
-        );
-    }, [db, textFilter]);
 
-    const onFilter = function (e) {
-        const data = e.target.value;
-        setTextFilter(data);
+    const onFilter = function ({target: {value}}) {
+        setTextFilter(value);
     };
 
-    const onChangeInsertForm = function (e) {
-        setInsertForm({...insertForm, [e.target.name]: e.target.value});
+    const onChangeInsertForm = function ({target: {name, value}}) {
+        setInsertForm({...insertForm, [name]: value});
     };
 
-    const selectedItem = currentList.find((item) => item.selected);
+    const selectedItem = db.find((item) => item.selected);
+    const filteredItems = db.filter((item) =>
+        item.surname.toLocaleLowerCase().startsWith(textFilter.trim().toLocaleLowerCase())
+    );
 
     const onCreate = function () {
         const [name, surname] = [insertForm.name.trim(), insertForm.surname.trim()];
@@ -46,10 +42,10 @@ export const Crud = function () {
         setDb(db.filter((item) => item.id !== selectedItem.id));
     };
 
-    const listItems = currentList.map((item) => {
+    const listItems = filteredItems.map((item) => {
         const onClick = function () {
-            setCurrentList(
-                currentList.map(function (e) {
+            setDb(
+                db.map(function (e) {
                     return {...e, selected: item.id === e.id && !item.selected};
                 })
             );
