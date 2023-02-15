@@ -1,23 +1,25 @@
 import React from 'react';
 
+const DB = [
+    {id: 1, name: 'Hans', surname: 'Emil'},
+    {id: 2, name: 'Max', surname: 'Mustermann'},
+    {id: 3, name: 'Roman', surname: 'Tisch'},
+];
+
 export const Crud = function () {
-    const [db, setDb] = React.useState([
-        {id: 1, name: 'Hans', surname: 'Emil', selected: false},
-        {id: 2, name: 'Max', surname: 'Mustermann', selected: false},
-        {id: 3, name: 'Roman', surname: 'Tisch', selected: false},
-    ]);
-    const [filter, setFilter] = React.useState('');
+    const [db, setDb] = React.useState(DB);
+    const [textFilter, setTextFilter] = React.useState('');
     const [currentList, setCurrentList] = React.useState([]);
     const [insertForm, setInsertForm] = React.useState({name: '', surname: ''});
     React.useEffect(() => {
         setCurrentList(
-            db.filter((item) => item.surname.toLocaleLowerCase().startsWith(filter.trim().toLocaleLowerCase()))
+            db.filter((item) => item.surname.toLocaleLowerCase().startsWith(textFilter.trim().toLocaleLowerCase()))
         );
-    }, [db, filter]);
+    }, [db, textFilter]);
 
     const onFilter = function (e) {
         const data = e.target.value;
-        setFilter(data);
+        setTextFilter(data);
     };
 
     const onChangeInsertForm = function (e) {
@@ -78,7 +80,7 @@ export const Crud = function () {
                             <div className="row mb-3">
                                 <label className="col-sm-3 col-form-label">Filter prefix:</label>
                                 <div className="col-sm-9">
-                                    <input className="form-control" value={filter} onChange={onFilter} />
+                                    <input className="form-control" value={textFilter} onChange={onFilter} />
                                 </div>
                             </div>
                         </div>
@@ -97,7 +99,7 @@ export const Crud = function () {
                                         name="name"
                                         value={insertForm.name}
                                         onChange={onChangeInsertForm}
-                                        autocomplete="off"
+                                        autoComplete="off"
                                     />
                                 </div>
                             </div>
