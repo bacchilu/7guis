@@ -6,14 +6,18 @@ const DB = [
     {id: 3, name: 'Roman', surname: 'Tisch', selected: false},
 ];
 
+const TextFilter = function ({value, setValue}) {
+    const onChange = function ({target: {value}}) {
+        setValue(value);
+    };
+
+    return <input className="form-control" value={value} onChange={onChange} />;
+};
+
 export const Crud = function () {
     const [db, setDb] = React.useState(DB);
     const [textFilter, setTextFilter] = React.useState('');
     const [insertForm, setInsertForm] = React.useState({name: '', surname: ''});
-
-    const onFilter = function ({target: {value}}) {
-        setTextFilter(value);
-    };
 
     const onChangeInsertForm = function ({target: {name, value}}) {
         setInsertForm({...insertForm, [name]: value});
@@ -76,7 +80,7 @@ export const Crud = function () {
                             <div className="row mb-3">
                                 <label className="col-sm-3 col-form-label">Filter prefix:</label>
                                 <div className="col-sm-9">
-                                    <input className="form-control" value={textFilter} onChange={onFilter} />
+                                    <TextFilter value={textFilter} setValue={setTextFilter} />
                                 </div>
                             </div>
                         </div>
