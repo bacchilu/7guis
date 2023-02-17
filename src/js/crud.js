@@ -11,17 +11,49 @@ const TextFilter = function ({value, setValue}) {
         setValue(value);
     };
 
-    return <input className="form-control" value={value} onChange={onChange} />;
+    return (
+        <>
+            <label className="col-sm-3 col-form-label">Filter prefix:</label>
+            <div className="col-sm-9">
+                <input className="form-control" value={value} onChange={onChange} />
+            </div>
+        </>
+    );
+};
+
+const Form = function ({insertForm, setInsertForm}) {
+    const onChange = function ({target: {name, value}}) {
+        setInsertForm({...insertForm, [name]: value});
+    };
+
+    return (
+        <>
+            <div className="row mb-3">
+                <label className="col-sm-3 col-form-label">Name:</label>
+                <div className="col-sm-9">
+                    <input
+                        className="form-control"
+                        name="name"
+                        value={insertForm.name}
+                        onChange={onChange}
+                        autoComplete="off"
+                    />
+                </div>
+            </div>
+            <div className="row mb-3">
+                <label className="col-sm-3 col-form-label">Surname:</label>
+                <div className="col-sm-9">
+                    <input className="form-control" name="surname" value={insertForm.surname} onChange={onChange} />
+                </div>
+            </div>
+        </>
+    );
 };
 
 export const Crud = function () {
     const [db, setDb] = React.useState(DB);
     const [textFilter, setTextFilter] = React.useState('');
     const [insertForm, setInsertForm] = React.useState({name: '', surname: ''});
-
-    const onChangeInsertForm = function ({target: {name, value}}) {
-        setInsertForm({...insertForm, [name]: value});
-    };
 
     const selectedItem = db.find((item) => item.selected);
     const filteredItems = db.filter((item) =>
@@ -78,10 +110,7 @@ export const Crud = function () {
                     <div className="row mb-3">
                         <div className="col">
                             <div className="row mb-3">
-                                <label className="col-sm-3 col-form-label">Filter prefix:</label>
-                                <div className="col-sm-9">
-                                    <TextFilter value={textFilter} setValue={setTextFilter} />
-                                </div>
+                                <TextFilter value={textFilter} setValue={setTextFilter} />
                             </div>
                         </div>
                         <div className="col"></div>
@@ -91,29 +120,7 @@ export const Crud = function () {
                             <div className="list-group">{listItems}</div>
                         </div>
                         <div className="col">
-                            <div className="row mb-3">
-                                <label className="col-sm-3 col-form-label">Name:</label>
-                                <div className="col-sm-9">
-                                    <input
-                                        className="form-control"
-                                        name="name"
-                                        value={insertForm.name}
-                                        onChange={onChangeInsertForm}
-                                        autoComplete="off"
-                                    />
-                                </div>
-                            </div>
-                            <div className="row mb-3">
-                                <label className="col-sm-3 col-form-label">Surname:</label>
-                                <div className="col-sm-9">
-                                    <input
-                                        className="form-control"
-                                        name="surname"
-                                        value={insertForm.surname}
-                                        onChange={onChangeInsertForm}
-                                    />
-                                </div>
-                            </div>
+                            <Form insertForm={insertForm} setInsertForm={setInsertForm} />
                         </div>
                     </div>
                     <div className="row mb-3">

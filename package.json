@@ -8,7 +8,7 @@
     "update": "ncu -u",
     "serve": "parcel -p 8000",
     "watch": "parcel watch",
-    "build": "rm -rf dist && rm -rf docs && parcel build --no-source-maps --dist-dir docs --public-url=/7guis"
+    "build": "rm -rf dist && rm -rf docs && parcel build --no-source-maps --dist-dir docs --public-url=/7guis && rm -rf .parcel-cache"
   },
   "author": "Luca Bacchi <bacchilu@gmail.com> (https://github.com/bacchilu)",
   "license": "ISC",
