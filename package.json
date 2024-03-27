@@ -1,6 +1,6 @@
 {
   "name": "7guis",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "https://7guis.github.io/7guis/tasks",
   "source": "src/index.html",
   "browserslist": "defaults",
@@ -32,8 +32,8 @@
     "vueIndentScriptAndStyle": false
   },
   "devDependencies": {
-    "npm-check-updates": "^16.7.4",
-    "parcel": "^2.8.3",
+    "npm-check-updates": "^16.14.18",
+    "parcel": "^2.12.0",
     "process": "^0.11.10"
   },
   "dependencies": {
