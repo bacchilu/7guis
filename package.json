@@ -5,10 +5,10 @@
   "source": "src/index.html",
   "browserslist": "defaults",
   "scripts": {
+    "dev": "parcel -p 8000",
+    "build": "rm -rf dist && rm -rf docs && parcel build --no-source-maps --dist-dir docs --public-url=/7guis && rm -rf .parcel-cache",
     "update": "ncu -u",
-    "serve": "parcel -p 8000",
-    "watch": "parcel watch",
-    "build": "rm -rf dist && rm -rf docs && parcel build --no-source-maps --dist-dir docs --public-url=/7guis && rm -rf .parcel-cache"
+    "watch": "parcel watch"
   },
   "author": "Luca Bacchi <bacchilu@gmail.com> (https://github.com/bacchilu)",
   "license": "ISC",
