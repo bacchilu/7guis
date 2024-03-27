@@ -1,27 +1,26 @@
+import Decimal from 'decimal.js';
 import React from 'react';
-import Big from 'big.js';
+
+const toFahrenheit = function (n: Decimal) {
+    return n.times(new Decimal('9').div(new Decimal('5'))).plus('32');
+};
+
+const toCelsius = function (n: Decimal) {
+    return n.minus('32').times(new Decimal('5').div(new Decimal('9')));
+};
 
 export const TempConv = function () {
     const [celsius, setCelsius] = React.useState('');
     const [fahrenheit, setFahrenheit] = React.useState('');
 
-    const onCelcius = function (e) {
-        const v = e.target.value;
-        setCelsius(v);
+    const onChange = function (e: React.ChangeEvent<HTMLInputElement>) {
+        const name = e.target.name as 'celsius' | 'fahrenheit';
+        const value = e.target.value;
+        const [setSource, setTarget, convert] =
+            name === 'celsius' ? [setCelsius, setFahrenheit, toFahrenheit] : [setFahrenheit, setCelsius, toCelsius];
+        setSource(value);
         try {
-            const n = Big(v);
-            const res = n.times(Big('9').div(Big('5'))).plus('32');
-            setFahrenheit(res.round(2).toString());
-        } catch {}
-    };
-
-    const onFahrenheit = function (e) {
-        const v = e.target.value;
-        setFahrenheit(v);
-        try {
-            const n = Big(v);
-            const res = n.minus('32').times(Big('5').div(Big('9')));
-            setCelsius(res.round(2).toString());
+            setTarget(convert(new Decimal(value)).toDecimalPlaces(2).toString());
         } catch {}
     };
 
@@ -41,8 +40,9 @@ export const TempConv = function () {
                                 type="number"
                                 step="0.01"
                                 value={celsius}
-                                onChange={onCelcius}
-                                placeholder="Celcius"
+                                onChange={onChange}
+                                placeholder="Celsius"
+                                name="celsius"
                             />
                             <label>Celcius</label>
                         </div>
@@ -54,8 +54,9 @@ export const TempConv = function () {
                                 type="number"
                                 step="0.01"
                                 value={fahrenheit}
-                                onChange={onFahrenheit}
+                                onChange={onChange}
                                 placeholder="Fahrenheit"
+                                name="fahrenheit"
                             />
                             <label>Fahrenheit</label>
                         </div>

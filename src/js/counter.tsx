@@ -3,7 +3,7 @@ import React from 'react';
 export const Counter = function () {
     const [value, setValue] = React.useState(0);
 
-    const onClick = function (e) {
+    const onClick = function (e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
         setValue(value + 1);
     };

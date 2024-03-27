@@ -1,14 +1,19 @@
 import React from 'react';
 
+interface FormData {
+    name: string;
+    surname: string;
+}
+
 const DB = [
     {id: 1, name: 'Hans', surname: 'Emil', selected: false},
     {id: 2, name: 'Max', surname: 'Mustermann', selected: false},
     {id: 3, name: 'Roman', surname: 'Tisch', selected: false},
 ];
 
-const TextFilter = function ({value, setValue}) {
-    const onChange = function ({target: {value}}) {
-        setValue(value);
+const TextFilter: React.FC<{value: string; setValue: (v: string) => void}> = function ({value, setValue}) {
+    const onChange = function (e: React.ChangeEvent<HTMLInputElement>) {
+        setValue(e.target.value);
     };
 
     return (
@@ -21,9 +26,12 @@ const TextFilter = function ({value, setValue}) {
     );
 };
 
-const Form = function ({insertForm, setInsertForm}) {
-    const onChange = function ({target: {name, value}}) {
-        setInsertForm({...insertForm, [name]: value});
+const Form: React.FC<{insertForm: FormData; setInsertForm: (v: FormData) => void}> = function ({
+    insertForm,
+    setInsertForm,
+}) {
+    const onChange = function (e: React.ChangeEvent<HTMLInputElement>) {
+        setInsertForm({...insertForm, [e.target.name]: e.target.value} as FormData);
     };
 
     return (
@@ -53,7 +61,7 @@ const Form = function ({insertForm, setInsertForm}) {
 export const Crud = function () {
     const [db, setDb] = React.useState(DB);
     const [textFilter, setTextFilter] = React.useState('');
-    const [insertForm, setInsertForm] = React.useState({name: '', surname: ''});
+    const [insertForm, setInsertForm] = React.useState<FormData>({name: '', surname: ''});
 
     const selectedItem = db.find((item) => item.selected);
     const filteredItems = db.filter((item) =>
@@ -71,11 +79,11 @@ export const Crud = function () {
         const [name, surname] = [insertForm.name.trim(), insertForm.surname.trim()];
         if (name === '' || surname === '') return;
         if (db.find((item) => item.name === name && item.surname === surname) !== undefined) return;
-        setDb(db.map((item) => (item.id === selectedItem.id ? {...item, name, surname} : item)));
+        setDb(db.map((item) => (item.id === selectedItem!.id ? {...item, name, surname} : item)));
     };
 
     const onDelete = function () {
-        setDb(db.filter((item) => item.id !== selectedItem.id));
+        setDb(db.filter((item) => item.id !== selectedItem!.id));
     };
 
     const listItems = filteredItems.map((item) => {
