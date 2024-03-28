@@ -1,32 +1,36 @@
 import React from 'react';
 
-const toLocaleString = function (d) {
-    return new Date(d).toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
+enum SingleOrReturn {
+    SINGLE = 'SINGLE',
+    RETURN = 'RETURN',
+}
+
+interface MessageType {
+    type: SingleOrReturn;
+    startDate: Date;
+    endDate: Date;
+}
+
+const toLocaleString = function (d: Date) {
+    return d.toLocaleString(navigator.language, {year: 'numeric', month: 'long', day: 'numeric'});
 };
 
-const useTimeout = function (functionRef, delay, dependencies) {
-    const t = React.useRef(null);
-    React.useEffect(function () {
+const parseDate = function (strDate: string) {
+    const d = new Date(strDate);
+    return d.toString() !== 'Invalid Date' ? new Date(strDate) : null;
+};
+
+const useTimeout = function (functionRef: () => void, delay: number, dependencies: any[]) {
+    const t = React.useRef<number | undefined>(undefined);
+    React.useEffect(() => {
         clearTimeout(t.current);
         t.current = setTimeout(functionRef, delay);
     }, dependencies);
 };
 
-const Message = function ({message, closeMessage}) {
-    useTimeout(
-        function () {
-            closeMessage();
-        },
-        5000,
-        [message]
-    );
-
+const Message: React.FC<{message: MessageType}> = function ({message}) {
     const content =
-        message.type === 'SINGLE' ? (
+        message.type === SingleOrReturn.SINGLE ? (
             <span>
                 You have booked a one-way flight on <em>{toLocaleString(message.startDate)}</em>.
             </span>
@@ -47,40 +51,34 @@ const Message = function ({message, closeMessage}) {
 export const FlightBooker = function () {
     const today = `${new Date().toISOString()}`.split('T')[0];
 
-    const [type, setType] = React.useState('SINGLE');
-    const [startDate, setStartDate] = React.useState(today);
-    const [endDate, setEndDate] = React.useState(today);
-    const [message, setMessage] = React.useState(null);
+    const [type, setType] = React.useState<SingleOrReturn>(SingleOrReturn.SINGLE);
+    const [startStrDate, setStartStrDate] = React.useState(today);
+    const [endStrDate, setEndStrDate] = React.useState(today);
+    const [message, setMessage] = React.useState<MessageType | null>(null);
+    useTimeout(
+        () => {
+            setMessage(null);
+        },
+        5000,
+        [message]
+    );
 
-    const onChange = function (e) {
-        if (e.target.name === 'type') setType(e.target.value);
-        if (e.target.name === 'start_date') setStartDate(e.target.value);
-        if (e.target.name === 'end_date') setEndDate(e.target.value);
+    const [startDate, endDate] = [parseDate(startStrDate), parseDate(endStrDate)];
+
+    const onChange = function (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) {
+        if (e.target.name === 'type') setType(SingleOrReturn[e.target.value]);
+        if (e.target.name === 'start_date') setStartStrDate(e.target.value);
+        if (e.target.name === 'end_date') setEndStrDate(e.target.value);
     };
 
-    const closeMessage = function () {
-        setMessage(null);
-    };
-
-    const onSubmit = function (e) {
+    const onSubmit = function (e: React.FormEvent) {
         e.preventDefault();
-        setMessage({type, startDate, endDate});
-    };
-
-    const isDateValid = function (v) {
-        const d = new Date(v);
-        return !isNaN(d);
-    };
-
-    const strictlyBefore = function () {
-        console.assert(isDateValid(startDate));
-        console.assert(isDateValid(endDate));
-        return new Date(startDate) < new Date(endDate);
+        setMessage({type, startDate: startDate!, endDate: endDate!});
     };
 
     const isSubmitEnabled = function () {
-        if (type === 'SINGLE') return isDateValid(startDate);
-        if (type === 'RETURN') return isDateValid(startDate) && isDateValid(endDate) && strictlyBefore();
+        if (type === SingleOrReturn.SINGLE) return startDate !== null;
+        if (type === SingleOrReturn.RETURN) return startDate !== null && endDate !== null && startDate < endDate;
         console.assert(false);
     };
 
@@ -105,11 +103,11 @@ export const FlightBooker = function () {
                     <div className="col-auto">
                         <div className="form-floating">
                             <input
-                                className={`form-control ${isDateValid(startDate) ? '' : 'is-invalid'}`}
+                                className={`form-control ${startDate !== null ? '' : 'is-invalid'}`}
                                 type="date"
                                 placeholder="Start Date"
                                 name="start_date"
-                                value={startDate}
+                                value={startStrDate}
                                 onChange={onChange}
                             />
                             <label>Start Date</label>
@@ -119,14 +117,14 @@ export const FlightBooker = function () {
                         <div className="form-floating">
                             <input
                                 className={`form-control ${
-                                    type !== 'SINGLE' && !isDateValid(endDate) ? 'is-invalid' : ''
+                                    type !== SingleOrReturn.SINGLE && endDate === null ? 'is-invalid' : ''
                                 }`}
                                 type="date"
                                 placeholder="Return Date"
                                 name="end_date"
-                                value={endDate}
+                                value={endStrDate}
                                 onChange={onChange}
-                                disabled={type === 'SINGLE'}
+                                disabled={type === SingleOrReturn.SINGLE}
                             />
                             <label>Return Date</label>
                         </div>
@@ -142,7 +140,7 @@ export const FlightBooker = function () {
                         </button>
                     </div>
                 </form>
-                {message !== null && <Message message={message} closeMessage={closeMessage} />}
+                {message !== null && <Message message={message} />}
             </div>
         </div>
     );
