@@ -5,10 +5,17 @@ interface FormData {
     surname: string;
 }
 
+interface DBItem {
+    id: number;
+    name: string;
+    surname: string;
+    selected: boolean;
+}
+
 const DB = [
-    {id: 1, name: 'Hans', surname: 'Emil', selected: false},
-    {id: 2, name: 'Max', surname: 'Mustermann', selected: false},
-    {id: 3, name: 'Roman', surname: 'Tisch', selected: false},
+    {id: 1, name: 'Hans', surname: 'Emil', selected: false} as DBItem,
+    {id: 2, name: 'Max', surname: 'Mustermann', selected: false} as DBItem,
+    {id: 3, name: 'Roman', surname: 'Tisch', selected: false} as DBItem,
 ];
 
 const TextFilter: React.FC<{value: string; setValue: (v: string) => void}> = function ({value, setValue}) {
@@ -61,7 +68,7 @@ const Form: React.FC<{insertForm: FormData; setInsertForm: (v: FormData) => void
 export const Crud = function () {
     const [db, setDb] = React.useState(DB);
     const [textFilter, setTextFilter] = React.useState('');
-    const [insertForm, setInsertForm] = React.useState<FormData>({name: '', surname: ''});
+    const [insertForm, setInsertForm] = React.useState<FormData>({name: '', surname: ''} as FormData);
 
     const selectedItem = db.find((item) => item.selected);
     const filteredItems = db.filter((item) =>
@@ -72,7 +79,7 @@ export const Crud = function () {
         const [name, surname] = [insertForm.name.trim(), insertForm.surname.trim()];
         if (name === '' || surname === '') return;
         if (db.find((item) => item.name === name && item.surname === surname) !== undefined) return;
-        setDb([...db, {name, surname, id: db.length + 1, selected: false}]);
+        setDb([...db, {id: db.length + 1, name, surname, selected: false}]);
     };
 
     const onUpdate = function () {
