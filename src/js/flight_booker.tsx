@@ -28,6 +28,18 @@ const useTimeout = function (functionRef: () => void, delay: number, dependencie
     }, dependencies);
 };
 
+const useTimingMessage = function () {
+    const [message, setMessage] = React.useState<MessageType | null>(null);
+    useTimeout(
+        () => {
+            setMessage(null);
+        },
+        5000,
+        [message]
+    );
+    return [message, setMessage] as [MessageType | null, (m: MessageType | null) => void];
+};
+
 const Message: React.FC<{message: MessageType}> = function ({message}) {
     const content =
         message.type === SingleOrReturn.SINGLE ? (
@@ -54,14 +66,7 @@ export const FlightBooker = function () {
     const [type, setType] = React.useState<SingleOrReturn>(SingleOrReturn.SINGLE);
     const [startStrDate, setStartStrDate] = React.useState(today);
     const [endStrDate, setEndStrDate] = React.useState(today);
-    const [message, setMessage] = React.useState<MessageType | null>(null);
-    useTimeout(
-        () => {
-            setMessage(null);
-        },
-        5000,
-        [message]
-    );
+    const [message, setMessage] = useTimingMessage();
 
     const [startDate, endDate] = [parseDate(startStrDate), parseDate(endStrDate)];
 

@@ -1,5 +1,27 @@
 import React from 'react';
 
+const MAX_DURATION = 300;
+
+const useInterval = function (MAX_DURATION: number) {
+    const [value, setValue] = React.useState(0);
+    const intervalRef = React.useRef<number | undefined>(undefined);
+
+    const restart = function () {
+        setValue(0);
+        clearInterval(intervalRef.current);
+        intervalRef.current = setInterval(() => {
+            setValue((c) => c + 1);
+        }, 100);
+    };
+
+    React.useEffect(restart, []);
+    React.useEffect(() => {
+        if (value >= MAX_DURATION) clearInterval(intervalRef.current);
+    }, [value]);
+
+    return {value, restart};
+};
+
 const Progress: React.FC<{current: number; duration: number}> = function ({current, duration}) {
     const width = current >= duration ? 100 : (100 * current) / duration;
 
@@ -12,32 +34,12 @@ const Progress: React.FC<{current: number; duration: number}> = function ({curre
     );
 };
 
-const MAX_DURATION = 300;
-
 export const Timer = function () {
-    const [current, setCurrent] = React.useState(0);
     const [duration, setDuration] = React.useState(MAX_DURATION / 2);
-    const intervalRef = React.useRef<number | undefined>(undefined);
-    const resetInterval = function () {
-        clearInterval(intervalRef.current);
-        intervalRef.current = setInterval(function () {
-            setCurrent(function (c) {
-                return c + 1;
-            });
-        }, 100);
-    };
-    React.useEffect(resetInterval, []);
-    React.useEffect(() => {
-        if (current >= MAX_DURATION) clearInterval(intervalRef.current);
-    }, [current]);
+    const {value, restart} = useInterval(MAX_DURATION);
 
     const changeDuration = function (e: React.ChangeEvent<HTMLInputElement>) {
         setDuration(+e.target.value);
-    };
-
-    const resetTimer = function () {
-        setCurrent(0);
-        resetInterval();
     };
 
     return (
@@ -51,7 +53,7 @@ export const Timer = function () {
                 <div className="row align-items-start">
                     <div className="col-2">Elapsed Time:</div>
                     <div className="col-10">
-                        <Progress current={current} duration={duration} />
+                        <Progress current={value} duration={duration} />
                     </div>
                 </div>
                 <div className="row align-items-start">
@@ -67,7 +69,7 @@ export const Timer = function () {
                         />
                     </div>
                 </div>
-                <button className="btn btn-primary" onClick={resetTimer}>
+                <button className="btn btn-primary" onClick={restart}>
                     Reset Timer
                 </button>
             </div>
