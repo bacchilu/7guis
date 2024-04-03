@@ -1,3 +1,4 @@
+import React from 'react';
 import {createRoot} from 'react-dom/client';
 
 import {Counter} from './counter';
@@ -18,4 +19,4 @@ const App = function () {
     );
 };
 
-createRoot(document.getElementById('app')).render(<App />);
+createRoot(document.getElementById('app')!).render(<App />);
