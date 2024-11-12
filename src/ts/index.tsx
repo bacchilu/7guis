@@ -6,19 +6,20 @@ import {createRoot} from 'react-dom/client';
 import {Counter} from './counter';
 import {Crud} from './crud';
 import {FlightBooker} from './flight_booker';
+import {Container} from './libs/bootstrap';
 import {TempConv} from './temp_conv';
 import {Timer} from './timer';
 
 const App = function () {
     return (
-        <div className="container">
+        <Container>
             <h1>7GUIs</h1>
             <Counter />
             <TempConv />
             <FlightBooker />
             <Timer />
             <Crud />
-        </div>
+        </Container>
     );
 };
 

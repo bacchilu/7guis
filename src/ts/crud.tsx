@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {Card} from './libs/bootstrap';
+
 interface FormData {
     name: string;
     surname: string;
@@ -114,55 +116,48 @@ export const Crud = function () {
         );
     });
     return (
-        <div className="card text-bg-light m-4">
-            <div className="card-body">
-                <h5 className="card-title">
-                    <a href="https://eugenkiss.github.io/7guis/tasks/#crud" target="_blank">
-                        CRUD
-                    </a>
-                </h5>
-                <form>
-                    <div className="row mb-3">
-                        <div className="col">
-                            <div className="row mb-3">
-                                <TextFilter value={textFilter} setValue={setTextFilter} />
-                            </div>
-                        </div>
-                        <div className="col"></div>
-                    </div>
-                    <div className="row mb-3">
-                        <div className="col">
-                            <div className="list-group">{listItems}</div>
-                        </div>
-                        <div className="col">
-                            <Form insertForm={insertForm} setInsertForm={setInsertForm} />
+        <Card title="CRUD" url="https://eugenkiss.github.io/7guis/tasks/#crud">
+            <form>
+                <div className="row mb-3">
+                    <div className="col">
+                        <div className="row mb-3">
+                            <TextFilter value={textFilter} setValue={setTextFilter} />
                         </div>
                     </div>
-                    <div className="row mb-3">
-                        <div className="col">
-                            <button type="button" className="btn btn-primary me-3" onClick={onCreate}>
-                                Create
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-warning me-3"
-                                disabled={selectedItem === undefined}
-                                onClick={onUpdate}
-                            >
-                                Update
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-danger me-3"
-                                disabled={selectedItem === undefined}
-                                onClick={onDelete}
-                            >
-                                Delete
-                            </button>
-                        </div>
+                    <div className="col"></div>
+                </div>
+                <div className="row mb-3">
+                    <div className="col">
+                        <div className="list-group">{listItems}</div>
                     </div>
-                </form>
-            </div>
-        </div>
+                    <div className="col">
+                        <Form insertForm={insertForm} setInsertForm={setInsertForm} />
+                    </div>
+                </div>
+                <div className="row mb-3">
+                    <div className="col">
+                        <button type="button" className="btn btn-primary me-3" onClick={onCreate}>
+                            Create
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-warning me-3"
+                            disabled={selectedItem === undefined}
+                            onClick={onUpdate}
+                        >
+                            Update
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-danger me-3"
+                            disabled={selectedItem === undefined}
+                            onClick={onDelete}
+                        >
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </Card>
     );
 };

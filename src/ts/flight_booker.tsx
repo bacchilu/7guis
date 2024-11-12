@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {Card} from './libs/bootstrap';
+
 enum SingleOrReturn {
     SINGLE = 'SINGLE',
     RETURN = 'RETURN',
@@ -88,65 +90,58 @@ export const FlightBooker = function () {
     };
 
     return (
-        <div className="card text-bg-light m-4">
-            <div className="card-body">
-                <h5 className="card-title">
-                    <a href="https://eugenkiss.github.io/7guis/tasks/#flight" target="_blank">
-                        Flight Booker
-                    </a>
-                </h5>
-                <form className="row row-cols-lg-auto m-4" onSubmit={onSubmit}>
-                    <div className="col-auto">
-                        <div className="form-floating">
-                            <select className="form-select" name="type" value={type} onChange={onChange}>
-                                <option value="SINGLE">one-way flight</option>
-                                <option value="RETURN">return flight</option>
-                            </select>
-                            <label>Single or Return</label>
-                        </div>
+        <Card title="Flight Booker" url="https://eugenkiss.github.io/7guis/tasks/#flight">
+            <form className="row row-cols-lg-auto" onSubmit={onSubmit}>
+                <div className="col-auto">
+                    <div className="form-floating">
+                        <select className="form-select" name="type" value={type} onChange={onChange}>
+                            <option value="SINGLE">one-way flight</option>
+                            <option value="RETURN">return flight</option>
+                        </select>
+                        <label>Single or Return</label>
                     </div>
-                    <div className="col-auto">
-                        <div className="form-floating">
-                            <input
-                                className={`form-control ${startDate !== null ? '' : 'is-invalid'}`}
-                                type="date"
-                                placeholder="Start Date"
-                                name="start_date"
-                                value={startStrDate}
-                                onChange={onChange}
-                            />
-                            <label>Start Date</label>
-                        </div>
+                </div>
+                <div className="col-auto">
+                    <div className="form-floating">
+                        <input
+                            className={`form-control ${startDate !== null ? '' : 'is-invalid'}`}
+                            type="date"
+                            placeholder="Start Date"
+                            name="start_date"
+                            value={startStrDate}
+                            onChange={onChange}
+                        />
+                        <label>Start Date</label>
                     </div>
-                    <div className="col-auto">
-                        <div className="form-floating">
-                            <input
-                                className={`form-control ${
-                                    type !== SingleOrReturn.SINGLE && endDate === null ? 'is-invalid' : ''
-                                }`}
-                                type="date"
-                                placeholder="Return Date"
-                                name="end_date"
-                                value={endStrDate}
-                                onChange={onChange}
-                                disabled={type === SingleOrReturn.SINGLE}
-                            />
-                            <label>Return Date</label>
-                        </div>
+                </div>
+                <div className="col-auto">
+                    <div className="form-floating">
+                        <input
+                            className={`form-control ${
+                                type !== SingleOrReturn.SINGLE && endDate === null ? 'is-invalid' : ''
+                            }`}
+                            type="date"
+                            placeholder="Return Date"
+                            name="end_date"
+                            value={endStrDate}
+                            onChange={onChange}
+                            disabled={type === SingleOrReturn.SINGLE}
+                        />
+                        <label>Return Date</label>
                     </div>
-                    <div className="col-auto">
-                        <button
-                            type="submit"
-                            className="btn btn-primary mb-3"
-                            style={{marginTop: '8px'}}
-                            disabled={!isSubmitEnabled()}
-                        >
-                            Book
-                        </button>
-                    </div>
-                </form>
-                {message !== null && <Message message={message} />}
-            </div>
-        </div>
+                </div>
+                <div className="col-auto">
+                    <button
+                        type="submit"
+                        className="btn btn-primary mb-3"
+                        style={{marginTop: '8px'}}
+                        disabled={!isSubmitEnabled()}
+                    >
+                        Book
+                    </button>
+                </div>
+            </form>
+            {message !== null && <Message message={message} />}
+        </Card>
     );
 };
