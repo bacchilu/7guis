@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Card} from './libs/bootstrap';
+import {Card, Form} from './libs/bootstrap';
 
 enum SingleOrReturn {
     SINGLE = 'SINGLE',
@@ -78,8 +78,7 @@ export const FlightBooker = function () {
         if (e.target.name === 'end_date') setEndStrDate(e.target.value);
     };
 
-    const onSubmit = function (e: React.FormEvent) {
-        e.preventDefault();
+    const onSubmit = function () {
         setMessage({type, startDate: startDate!, endDate: endDate!});
     };
 
@@ -91,56 +90,58 @@ export const FlightBooker = function () {
 
     return (
         <Card title="Flight Booker" url="https://eugenkiss.github.io/7guis/tasks/#flight">
-            <form className="row row-cols-lg-auto" onSubmit={onSubmit}>
-                <div className="col-auto">
-                    <div className="form-floating">
-                        <select className="form-select" name="type" value={type} onChange={onChange}>
-                            <option value="SINGLE">one-way flight</option>
-                            <option value="RETURN">return flight</option>
-                        </select>
-                        <label>Single or Return</label>
+            <Form onSubmit={onSubmit}>
+                <div className="row row-cols-lg-auto">
+                    <div className="col-auto">
+                        <div className="form-floating">
+                            <select className="form-select" name="type" value={type} onChange={onChange}>
+                                <option value="SINGLE">one-way flight</option>
+                                <option value="RETURN">return flight</option>
+                            </select>
+                            <label>Single or Return</label>
+                        </div>
+                    </div>
+                    <div className="col-auto">
+                        <div className="form-floating">
+                            <input
+                                className={`form-control ${startDate !== null ? '' : 'is-invalid'}`}
+                                type="date"
+                                placeholder="Start Date"
+                                name="start_date"
+                                value={startStrDate}
+                                onChange={onChange}
+                            />
+                            <label>Start Date</label>
+                        </div>
+                    </div>
+                    <div className="col-auto">
+                        <div className="form-floating">
+                            <input
+                                className={`form-control ${
+                                    type !== SingleOrReturn.SINGLE && endDate === null ? 'is-invalid' : ''
+                                }`}
+                                type="date"
+                                placeholder="Return Date"
+                                name="end_date"
+                                value={endStrDate}
+                                onChange={onChange}
+                                disabled={type === SingleOrReturn.SINGLE}
+                            />
+                            <label>Return Date</label>
+                        </div>
+                    </div>
+                    <div className="col-auto">
+                        <button
+                            type="submit"
+                            className="btn btn-primary mb-3"
+                            style={{marginTop: '8px'}}
+                            disabled={!isSubmitEnabled()}
+                        >
+                            Book
+                        </button>
                     </div>
                 </div>
-                <div className="col-auto">
-                    <div className="form-floating">
-                        <input
-                            className={`form-control ${startDate !== null ? '' : 'is-invalid'}`}
-                            type="date"
-                            placeholder="Start Date"
-                            name="start_date"
-                            value={startStrDate}
-                            onChange={onChange}
-                        />
-                        <label>Start Date</label>
-                    </div>
-                </div>
-                <div className="col-auto">
-                    <div className="form-floating">
-                        <input
-                            className={`form-control ${
-                                type !== SingleOrReturn.SINGLE && endDate === null ? 'is-invalid' : ''
-                            }`}
-                            type="date"
-                            placeholder="Return Date"
-                            name="end_date"
-                            value={endStrDate}
-                            onChange={onChange}
-                            disabled={type === SingleOrReturn.SINGLE}
-                        />
-                        <label>Return Date</label>
-                    </div>
-                </div>
-                <div className="col-auto">
-                    <button
-                        type="submit"
-                        className="btn btn-primary mb-3"
-                        style={{marginTop: '8px'}}
-                        disabled={!isSubmitEnabled()}
-                    >
-                        Book
-                    </button>
-                </div>
-            </form>
+            </Form>
             {message !== null && <Message message={message} />}
         </Card>
     );

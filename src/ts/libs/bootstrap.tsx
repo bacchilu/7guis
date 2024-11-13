@@ -22,3 +22,15 @@ export const Card: React.FC<{title: string; url: string; children: React.ReactNo
         </div>
     );
 };
+
+export const Form: React.FC<{onSubmit?: () => void; children: React.ReactNode}> = function ({
+    onSubmit: handleSubmit = () => {},
+    children,
+}) {
+    const onSubmit = function (e: React.FormEvent) {
+        e.preventDefault();
+        handleSubmit();
+    };
+
+    return <form onSubmit={onSubmit}>{children}</form>;
+};

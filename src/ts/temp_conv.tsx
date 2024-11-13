@@ -1,7 +1,7 @@
 import Decimal from 'decimal.js';
 import React from 'react';
 
-import {Card} from './libs/bootstrap';
+import {Card, Form} from './libs/bootstrap';
 
 const toFahrenheit = function (n: Decimal) {
     return n.times(new Decimal('9').div(new Decimal('5'))).plus('32');
@@ -28,36 +28,38 @@ export const TempConv = function () {
 
     return (
         <Card title="Temperature Converter" url="https://eugenkiss.github.io/7guis/tasks/#temp">
-            <form className="row row-cols-lg-auto">
-                <div className="col-auto">
-                    <div className="form-floating">
-                        <input
-                            className="form-control"
-                            type="number"
-                            step="0.01"
-                            value={celsius}
-                            onChange={onChange}
-                            placeholder="Celsius"
-                            name="celsius"
-                        />
-                        <label>Celcius</label>
+            <Form>
+                <div className="row row-cols-lg-auto">
+                    <div className="col-auto">
+                        <div className="form-floating">
+                            <input
+                                className="form-control"
+                                type="number"
+                                step="0.01"
+                                value={celsius}
+                                onChange={onChange}
+                                placeholder="Celsius"
+                                name="celsius"
+                            />
+                            <label>Celcius</label>
+                        </div>
+                    </div>
+                    <div className="col-auto">
+                        <div className="form-floating">
+                            <input
+                                className="form-control"
+                                type="number"
+                                step="0.01"
+                                value={fahrenheit}
+                                onChange={onChange}
+                                placeholder="Fahrenheit"
+                                name="fahrenheit"
+                            />
+                            <label>Fahrenheit</label>
+                        </div>
                     </div>
                 </div>
-                <div className="col-auto">
-                    <div className="form-floating">
-                        <input
-                            className="form-control"
-                            type="number"
-                            step="0.01"
-                            value={fahrenheit}
-                            onChange={onChange}
-                            placeholder="Fahrenheit"
-                            name="fahrenheit"
-                        />
-                        <label>Fahrenheit</label>
-                    </div>
-                </div>
-            </form>
+            </Form>
             <p className="card-text mt-4">
                 My first idea was to use the inner state of this component as a Single Source of Truth, storing only one
                 of the two temperatures and deriving the other in real time. Actually this kind of solution cannot work

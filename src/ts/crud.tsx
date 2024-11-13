@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Card} from './libs/bootstrap';
+import {Form as BootstrapForm, Card} from './libs/bootstrap';
 
 interface FormData {
     name: string;
@@ -117,7 +117,7 @@ export const Crud = function () {
     });
     return (
         <Card title="CRUD" url="https://eugenkiss.github.io/7guis/tasks/#crud">
-            <form>
+            <BootstrapForm>
                 <div className="row mb-3">
                     <div className="col">
                         <div className="row mb-3">
@@ -157,7 +157,7 @@ export const Crud = function () {
                         </button>
                     </div>
                 </div>
-            </form>
+            </BootstrapForm>
         </Card>
     );
 };
