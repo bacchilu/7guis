@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Form as BootstrapForm, Card} from './libs/bootstrap';
+import {Form as BootstrapForm, Card} from '../libs/bootstrap';
 
 interface FormData {
     name: string;

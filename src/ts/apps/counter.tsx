@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Card, Form} from './libs/bootstrap';
+import {Card, Form} from '../libs/bootstrap';
 
 export const Counter = function () {
     const [value, setValue] = React.useState(0);

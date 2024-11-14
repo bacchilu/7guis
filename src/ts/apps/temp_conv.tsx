@@ -1,7 +1,7 @@
 import Decimal from 'decimal.js';
 import React from 'react';
 
-import {Card, Form} from './libs/bootstrap';
+import {Card, Form} from '../libs/bootstrap';
 
 const toFahrenheit = function (n: Decimal) {
     return n.times(new Decimal('9').div(new Decimal('5'))).plus('32');

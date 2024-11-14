@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Card, Form} from './libs/bootstrap';
+import {Card, Form} from '../libs/bootstrap';
 
 enum SingleOrReturn {
     SINGLE = 'SINGLE',
