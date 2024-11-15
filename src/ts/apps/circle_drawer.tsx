@@ -6,6 +6,19 @@ import {Card} from '../libs/bootstrap';
 
 const DEFAULT_RADIUS = 10;
 
+interface Circle {
+    x: number;
+    y: number;
+    radius: number;
+}
+
+interface Operation {
+    type: 'DRAW';
+    x: number;
+    y: number;
+    radius: number;
+}
+
 class CanvasManager {
     constructor(public readonly canvas: HTMLCanvasElement) {}
 
@@ -25,7 +38,7 @@ class CanvasManager {
     }
 }
 
-const Canvas: React.FC<{width: number}> = function ({width}) {
+const Canvas: React.FC<{width: number; onOperation: (v: Operation) => void}> = function ({width, onOperation}) {
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
     const handleCanvasClick = function (e: React.MouseEvent<HTMLCanvasElement>) {
@@ -33,18 +46,18 @@ const Canvas: React.FC<{width: number}> = function ({width}) {
 
         const [x, y] = c.getRelativeCoords(e.clientX, e.clientY);
         c.drawCircle(x, y);
+        onOperation({type: 'DRAW', x, y, radius: DEFAULT_RADIUS} as Operation);
     };
 
     const handleCanvasMouseMove = function (e: React.MouseEvent<HTMLCanvasElement>) {
         const c = new CanvasManager(canvasRef.current!);
 
         const [x, y] = c.getRelativeCoords(e.clientX, e.clientY);
-        console.log(x, y);
+        // console.log(x, y);
     };
 
     return (
         <canvas
-            className="border"
             ref={canvasRef}
             height={width / 2}
             width={width}
@@ -65,7 +78,7 @@ export const DivContainer: React.FC<{setWidth: (v: number) => void; children: Re
     }, []);
 
     return (
-        <div ref={divRef} className="d-flex justify-content-center">
+        <div ref={divRef} className="d-flex justify-content-center border">
             {children}
         </div>
     );
@@ -73,10 +86,47 @@ export const DivContainer: React.FC<{setWidth: (v: number) => void; children: Re
 
 export const CircleDrawer = function () {
     const [width, setWidth] = React.useState<number | null>(null);
+    const [circlesList, setCirclesList] = React.useState<Circle[]>([]);
+    const [undoList, setUndoList] = React.useState<Operation[]>([]);
+    const [redoList, setRedoList] = React.useState<Operation[]>([]);
+
+    const handleOperation = function (op: Operation) {
+        setCirclesList([...circlesList, {x: op.x, y: op.y, radius: op.radius} as Circle]);
+        setUndoList([op, ...undoList]);
+    };
+
+    console.log(circlesList);
+
+    const handleUndo = function () {
+        const [lastOp, ...rest] = undoList;
+        setUndoList(rest);
+        setRedoList([lastOp, ...redoList]);
+        console.log(`I want to remove ${JSON.stringify(lastOp)}`);
+    };
+
+    const handleRedo = function () {
+        const [lastOp, ...rest] = redoList;
+        setUndoList([lastOp, ...undoList]);
+        setRedoList(rest);
+        console.log(`I want to add ${JSON.stringify(lastOp)}`);
+    };
+
+    const isUndoDisabled = undoList.length === 0;
+    const isRedoDisabled = redoList.length === 0;
 
     return (
         <Card title="Circle Drawer" url="https://eugenkiss.github.io/7guis/tasks#circle">
-            <DivContainer setWidth={setWidth}>{width !== null && <Canvas width={width} />}</DivContainer>
+            <div className="d-flex justify-content-center mb-4">
+                <button className="btn btn-outline-secondary me-4" disabled={isUndoDisabled} onClick={handleUndo}>
+                    Undo
+                </button>
+                <button className="btn btn-outline-secondary ms-4" disabled={isRedoDisabled} onClick={handleRedo}>
+                    Redo
+                </button>
+            </div>
+            <DivContainer setWidth={setWidth}>
+                {width !== null && <Canvas width={width} onOperation={handleOperation} />}
+            </DivContainer>
         </Card>
     );
 };
