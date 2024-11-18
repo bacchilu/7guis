@@ -6,21 +6,26 @@ import {Card} from '../libs/bootstrap';
 
 const DEFAULT_RADIUS = 10;
 
-interface Circle {
-    x: number;
-    y: number;
-    radius: number;
+class Circle {
+    constructor(public x: number, public y: number, public radius: number = DEFAULT_RADIUS) {}
 }
 
 interface Operation {
     type: 'DRAW';
-    x: number;
-    y: number;
-    radius: number;
+    circle: Circle;
 }
 
 class CanvasManager {
     constructor(public readonly canvas: HTMLCanvasElement) {}
+
+    _getContext() {
+        return this.canvas.getContext('2d')!;
+    }
+
+    clear() {
+        const ctx = this._getContext();
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
 
     getRelativeCoords(x: number, y: number) {
         const rect = this.canvas.getBoundingClientRect();
@@ -28,8 +33,7 @@ class CanvasManager {
     }
 
     drawCircle(x: number, y: number) {
-        const ctx = this.canvas.getContext('2d')!;
-        // ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        const ctx = this._getContext();
         ctx.beginPath();
         ctx.arc(x, y, DEFAULT_RADIUS, 0, 2 * Math.PI);
         ctx.fillStyle = 'lightgrey';
@@ -38,21 +42,40 @@ class CanvasManager {
     }
 }
 
-const Canvas: React.FC<{width: number; onOperation: (v: Operation) => void}> = function ({width, onOperation}) {
+const useCanvas = function () {
     const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
+    const [canvas, setCanvas] = React.useState<CanvasManager | null>(null);
+    React.useEffect(() => {
+        if (canvasRef.current === null) return;
+        setCanvas(new CanvasManager(canvasRef.current));
+    }, [canvasRef.current]);
+    return [canvasRef, canvas] as [React.MutableRefObject<HTMLCanvasElement | null>, CanvasManager | null];
+};
+
+const Canvas: React.FC<{width: number; onOperation: (v: Operation) => void; content: Circle[]}> = function ({
+    width,
+    onOperation,
+    content,
+}) {
+    const [canvasRef, canvasManager] = useCanvas();
+    React.useEffect(() => {
+        if (canvasManager === null) return;
+
+        canvasManager.clear();
+        for (const circle of content) canvasManager.drawCircle(circle.x, circle.y);
+    }, [content]);
 
     const handleCanvasClick = function (e: React.MouseEvent<HTMLCanvasElement>) {
-        const c = new CanvasManager(canvasRef.current!);
+        if (canvasManager === null) return;
 
-        const [x, y] = c.getRelativeCoords(e.clientX, e.clientY);
-        c.drawCircle(x, y);
-        onOperation({type: 'DRAW', x, y, radius: DEFAULT_RADIUS} as Operation);
+        const [x, y] = canvasManager.getRelativeCoords(e.clientX, e.clientY);
+        onOperation({type: 'DRAW', circle: new Circle(x, y)} as Operation);
     };
 
     const handleCanvasMouseMove = function (e: React.MouseEvent<HTMLCanvasElement>) {
-        const c = new CanvasManager(canvasRef.current!);
+        if (canvasManager === null) return;
 
-        const [x, y] = c.getRelativeCoords(e.clientX, e.clientY);
+        const [x, y] = canvasManager.getRelativeCoords(e.clientX, e.clientY);
         // console.log(x, y);
     };
 
@@ -84,31 +107,45 @@ export const DivContainer: React.FC<{setWidth: (v: number) => void; children: Re
     );
 };
 
+const useCirclesCanvas = function () {
+    const [circlesList, setCirclesList] = React.useState<Circle[]>([]);
+
+    const undo = function (op: Operation) {
+        if (op.type === 'DRAW') setCirclesList(circlesList.filter((circle) => circle !== op.circle));
+        else throw new Error('Operation not recognized');
+    };
+
+    const redo = function (op: Operation) {
+        if (op.type === 'DRAW') setCirclesList([...circlesList, op.circle]);
+        else throw new Error('Operation not recognized');
+    };
+
+    return [circlesList, {undo, redo}] as [Circle[], {undo: (op: Operation) => void; redo: (op: Operation) => void}];
+};
+
 export const CircleDrawer = function () {
     const [width, setWidth] = React.useState<number | null>(null);
-    const [circlesList, setCirclesList] = React.useState<Circle[]>([]);
+    const [circlesList, {undo, redo}] = useCirclesCanvas();
     const [undoList, setUndoList] = React.useState<Operation[]>([]);
     const [redoList, setRedoList] = React.useState<Operation[]>([]);
 
     const handleOperation = function (op: Operation) {
-        setCirclesList([...circlesList, {x: op.x, y: op.y, radius: op.radius} as Circle]);
         setUndoList([op, ...undoList]);
+        redo(op);
     };
-
-    console.log(circlesList);
 
     const handleUndo = function () {
         const [lastOp, ...rest] = undoList;
         setUndoList(rest);
         setRedoList([lastOp, ...redoList]);
-        console.log(`I want to remove ${JSON.stringify(lastOp)}`);
+        undo(lastOp);
     };
 
     const handleRedo = function () {
         const [lastOp, ...rest] = redoList;
         setUndoList([lastOp, ...undoList]);
         setRedoList(rest);
-        console.log(`I want to add ${JSON.stringify(lastOp)}`);
+        redo(lastOp);
     };
 
     const isUndoDisabled = undoList.length === 0;
@@ -125,7 +162,7 @@ export const CircleDrawer = function () {
                 </button>
             </div>
             <DivContainer setWidth={setWidth}>
-                {width !== null && <Canvas width={width} onOperation={handleOperation} />}
+                {width !== null && <Canvas width={width} onOperation={handleOperation} content={circlesList} />}
             </DivContainer>
         </Card>
     );
