@@ -1,6 +1,6 @@
 import React from 'react';
 
-class CanvasManager {
+export class CanvasManager {
     constructor(public readonly canvas: HTMLCanvasElement) {}
 
     _getContext() {

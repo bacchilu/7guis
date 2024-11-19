@@ -13,7 +13,7 @@ export const Canvas: React.FC<{width: number; onOperation: (v: Operation) => voi
         if (canvasManager === null) return;
 
         canvasManager.clear();
-        for (const circle of content) canvasManager.drawCircle(circle.x, circle.y, circle.radius);
+        for (const item of content) item.draw(canvasManager);
     }, [content]);
 
     const handleCanvasClick = function (e: React.MouseEvent<HTMLCanvasElement>) {
