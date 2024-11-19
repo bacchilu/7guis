@@ -20,7 +20,7 @@ export const Canvas: React.FC<{width: number; onOperation: (v: Operation) => voi
         if (canvasManager === null) return;
 
         const [x, y] = canvasManager.getRelativeCoords(e.clientX, e.clientY);
-        onOperation({type: OperationType.DRAW, circle: new Circle(x, y)} as Operation);
+        onOperation({type: OperationType.DRAW, content: new Circle(x, y)} as Operation);
     };
 
     const handleCanvasMouseMove = function (e: React.MouseEvent<HTMLCanvasElement>) {

@@ -10,5 +10,5 @@ export enum OperationType {
 
 export interface Operation {
     type: OperationType;
-    circle: Circle;
+    content: Circle;
 }
