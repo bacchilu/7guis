@@ -24,60 +24,60 @@ export const DivContainer: React.FC<{setWidth: (v: number) => void; children: Re
 
 const useCirclesCanvas = function () {
     const [circlesList, setCirclesList] = React.useState<Circle[]>([]);
-
-    const undo = function (op: Operation) {
-        if (op.type === OperationType.DRAW) setCirclesList(circlesList.filter((circle) => circle !== op.circle));
-        else throw new Error('Operation not recognized');
-    };
-
-    const redo = function (op: Operation) {
-        if (op.type === OperationType.DRAW) setCirclesList([...circlesList, op.circle]);
-        else throw new Error('Operation not recognized');
-    };
-
-    return [circlesList, {undo, redo}] as [Circle[], {undo: (op: Operation) => void; redo: (op: Operation) => void}];
-};
-
-export const CircleDrawer = function () {
-    const [width, setWidth] = React.useState<number | null>(null);
-    const [circlesList, {undo, redo}] = useCirclesCanvas();
     const [undoList, setUndoList] = React.useState<Operation[]>([]);
     const [redoList, setRedoList] = React.useState<Operation[]>([]);
 
-    const handleOperation = function (op: Operation) {
-        setUndoList([op, ...undoList]);
-        redo(op);
-    };
-
-    const handleUndo = function () {
+    const undoFn = function () {
         const [lastOp, ...rest] = undoList;
         setUndoList(rest);
         setRedoList([lastOp, ...redoList]);
-        undo(lastOp);
+
+        if (lastOp.type === OperationType.DRAW)
+            setCirclesList(circlesList.filter((circle) => circle !== lastOp.circle));
+        else throw new Error('Operation not recognized');
     };
 
-    const handleRedo = function () {
+    const redoFn = function () {
         const [lastOp, ...rest] = redoList;
         setUndoList([lastOp, ...undoList]);
         setRedoList(rest);
-        redo(lastOp);
+
+        if (lastOp.type === OperationType.DRAW) setCirclesList([...circlesList, lastOp.circle]);
+        else throw new Error('Operation not recognized');
+    };
+
+    const doFn = function (op: Operation) {
+        setUndoList([op, ...undoList]);
+
+        if (op.type === OperationType.DRAW) setCirclesList([...circlesList, op.circle]);
+        else throw new Error('Operation not recognized');
     };
 
     const isUndoDisabled = undoList.length === 0;
     const isRedoDisabled = redoList.length === 0;
 
+    return [circlesList, {doFn, undoFn: isUndoDisabled ? null : undoFn, redoFn: isRedoDisabled ? null : redoFn}] as [
+        Circle[],
+        {doFn: (op: Operation) => void; undoFn: () => void | null; redoFn: () => void | null}
+    ];
+};
+
+export const CircleDrawer = function () {
+    const [width, setWidth] = React.useState<number | null>(null);
+    const [circlesList, {doFn, undoFn, redoFn}] = useCirclesCanvas();
+
     return (
         <Card title="Circle Drawer" url="https://eugenkiss.github.io/7guis/tasks#circle">
             <div className="d-flex justify-content-center mb-4">
-                <button className="btn btn-outline-secondary me-4" disabled={isUndoDisabled} onClick={handleUndo}>
+                <button className="btn btn-outline-secondary me-4" disabled={undoFn === null} onClick={undoFn}>
                     Undo
                 </button>
-                <button className="btn btn-outline-secondary ms-4" disabled={isRedoDisabled} onClick={handleRedo}>
+                <button className="btn btn-outline-secondary ms-4" disabled={redoFn === null} onClick={redoFn}>
                     Redo
                 </button>
             </div>
             <DivContainer setWidth={setWidth}>
-                {width !== null && <Canvas width={width} onOperation={handleOperation} content={circlesList} />}
+                {width !== null && <Canvas width={width} onOperation={doFn} content={circlesList} />}
             </DivContainer>
         </Card>
     );
