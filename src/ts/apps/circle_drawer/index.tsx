@@ -66,6 +66,11 @@ export const CircleDrawer = function () {
         doFn({type: OperationType.DRAW, content: new Circle(x, y)} as Operation<Circle>);
     };
 
+    const handleMove = function (x: number, y: number) {
+        const candicates = content.filter((item) => item.distanceFrom(x, y) <= item.radius * 2);
+        console.log(Circle.findClosest(candicates, x, y));
+    };
+
     return (
         <Card title="Circle Drawer" url="https://eugenkiss.github.io/7guis/tasks#circle">
             <div className="d-flex justify-content-center mb-4">
@@ -77,7 +82,7 @@ export const CircleDrawer = function () {
                 </button>
             </div>
             <DivContainer setWidth={setWidth}>
-                {width !== null && <Canvas width={width} onClick={handleClick} content={content} />}
+                {width !== null && <Canvas width={width} content={content} onClick={handleClick} onMove={handleMove} />}
             </DivContainer>
         </Card>
     );

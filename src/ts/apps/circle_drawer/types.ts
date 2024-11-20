@@ -12,6 +12,23 @@ export class Circle implements Drawable {
     public draw(canvasManager: CanvasManager) {
         canvasManager.drawCircle(this.x, this.y, this.radius);
     }
+
+    public distanceFrom(x: number, y: number) {
+        const dx = this.x - x;
+        const dy = this.y - y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public static findClosest(circles: Circle[], x: number, y: number): Circle | null {
+        if (circles.length === 0) return null;
+        if (circles.length === 1) return circles[0];
+        const [first, ...rest] = circles;
+        const restClosestCircle = Circle.findClosest(rest, x, y);
+        if (restClosestCircle === null) return first;
+        const firstDistance = first.distanceFrom(x, y);
+        const restDistance = restClosestCircle.distanceFrom(x, y);
+        return firstDistance <= restDistance ? first : restClosestCircle;
+    }
 }
 
 export enum OperationType {
