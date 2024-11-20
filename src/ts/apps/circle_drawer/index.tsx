@@ -22,10 +22,10 @@ export const DivContainer: React.FC<{setWidth: (v: number) => void; children: Re
     );
 };
 
-const useCirclesCanvas = function () {
-    const [content, setContent] = React.useState<Circle[]>([]);
-    const [undoList, setUndoList] = React.useState<Operation[]>([]);
-    const [redoList, setRedoList] = React.useState<Operation[]>([]);
+const useCanvasContent = function <T>() {
+    const [content, setContent] = React.useState<T[]>([]);
+    const [undoList, setUndoList] = React.useState<Operation<T>[]>([]);
+    const [redoList, setRedoList] = React.useState<Operation<T>[]>([]);
 
     const undoFn = function () {
         const [lastOp, ...rest] = undoList;
@@ -45,7 +45,7 @@ const useCirclesCanvas = function () {
         else throw new Error('Operation not recognized');
     };
 
-    const doFn = function (op: Operation) {
+    const doFn = function (op: Operation<T>) {
         setUndoList([op, ...undoList]);
 
         if (op.type === OperationType.DRAW) setContent([...content, op.content]);
@@ -60,7 +60,11 @@ const useCirclesCanvas = function () {
 
 export const CircleDrawer = function () {
     const [width, setWidth] = React.useState<number | null>(null);
-    const {content, doFn, undoFn, redoFn} = useCirclesCanvas();
+    const {content, doFn, undoFn, redoFn} = useCanvasContent<Circle>();
+
+    const handleClick = function (x: number, y: number) {
+        doFn({type: OperationType.DRAW, content: new Circle(x, y)} as Operation<Circle>);
+    };
 
     return (
         <Card title="Circle Drawer" url="https://eugenkiss.github.io/7guis/tasks#circle">
@@ -73,7 +77,7 @@ export const CircleDrawer = function () {
                 </button>
             </div>
             <DivContainer setWidth={setWidth}>
-                {width !== null && <Canvas width={width} onOperation={doFn} content={content} />}
+                {width !== null && <Canvas width={width} onClick={handleClick} content={content} />}
             </DivContainer>
         </Card>
     );

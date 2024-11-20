@@ -2,7 +2,11 @@ import {CanvasManager} from './canvas/utils';
 
 const DEFAULT_RADIUS = 10;
 
-export class Circle {
+export interface Drawable {
+    draw(canvasManager: any): void;
+}
+
+export class Circle implements Drawable {
     constructor(public x: number, public y: number, public radius: number = DEFAULT_RADIUS) {}
 
     public draw(canvasManager: CanvasManager) {
@@ -14,7 +18,7 @@ export enum OperationType {
     DRAW,
 }
 
-export interface Operation {
+export interface Operation<T> {
     type: OperationType;
-    content: Circle;
+    content: T;
 }
