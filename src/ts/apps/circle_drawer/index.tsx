@@ -68,7 +68,8 @@ export const CircleDrawer = function () {
 
     const handleMove = function (x: number, y: number) {
         const candicates = content.filter((item) => item.distanceFrom(x, y) <= item.radius * 2);
-        console.log(Circle.findClosest(candicates, x, y));
+        const closest = Circle.findClosest(candicates, x, y);
+        content.map((circle) => circle.clone(closest === null ? false : circle === closest));
     };
 
     return (

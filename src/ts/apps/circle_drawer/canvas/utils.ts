@@ -17,12 +17,14 @@ export class CanvasManager {
         return [x - rect.left, (y = y - rect.top)];
     }
 
-    drawCircle(x: number, y: number, radius: number) {
+    drawCircle(x: number, y: number, radius: number, filled: boolean) {
         const ctx = this._getContext();
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI);
-        ctx.fillStyle = 'lightgrey';
-        ctx.fill();
+        if (filled) {
+            ctx.fillStyle = 'lightgrey';
+            ctx.fill();
+        }
         ctx.stroke();
     }
 }
