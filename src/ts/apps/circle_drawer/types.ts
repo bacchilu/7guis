@@ -10,8 +10,8 @@ export class Circle implements Drawable {
     constructor(
         public x: number,
         public y: number,
-        public radius: number = DEFAULT_RADIUS,
-        public filled: boolean = false
+        public filled: boolean = false,
+        public radius: number = DEFAULT_RADIUS
     ) {}
 
     public draw(canvasManager: CanvasManager) {
@@ -36,7 +36,7 @@ export class Circle implements Drawable {
     }
 
     public clone(filled: boolean) {
-        return new Circle(this.x, this.y, this.radius, filled);
+        return new Circle(this.x, this.y, filled, this.radius);
     }
 }
 

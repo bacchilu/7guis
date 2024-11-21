@@ -55,21 +55,26 @@ const useCanvasContent = function <T>() {
     const isUndoDisabled = undoList.length === 0;
     const isRedoDisabled = redoList.length === 0;
 
-    return {content, doFn, undoFn: isUndoDisabled ? null : undoFn, redoFn: isRedoDisabled ? null : redoFn};
+    return {content, doFn, undoFn: isUndoDisabled ? null : undoFn, redoFn: isRedoDisabled ? null : redoFn, setContent};
 };
 
 export const CircleDrawer = function () {
     const [width, setWidth] = React.useState<number | null>(null);
-    const {content, doFn, undoFn, redoFn} = useCanvasContent<Circle>();
+    const {content, doFn, undoFn, redoFn, setContent} = useCanvasContent<Circle>();
 
     const handleClick = function (x: number, y: number) {
-        doFn({type: OperationType.DRAW, content: new Circle(x, y)} as Operation<Circle>);
+        doFn({type: OperationType.DRAW, content: new Circle(x, y, true)} as Operation<Circle>);
     };
 
     const handleMove = function (x: number, y: number) {
         const candicates = content.filter((item) => item.distanceFrom(x, y) <= item.radius * 2);
         const closest = Circle.findClosest(candicates, x, y);
-        content.map((circle) => circle.clone(closest === null ? false : circle === closest));
+        setContent(
+            content.map((circle) => {
+                circle.filled = closest === null ? false : circle === closest;
+                return circle;
+            })
+        );
     };
 
     return (
