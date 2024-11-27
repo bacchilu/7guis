@@ -31,6 +31,12 @@ export const Canvas: React.FC<{
         onMove(x, y);
     };
 
+    const handleContextMenu = function (e: React.MouseEvent<HTMLCanvasElement>) {
+        e.preventDefault();
+        const coords = {x: e.clientX, y: e.clientY};
+        console.log('HERE I AM', coords);
+    };
+
     return (
         <canvas
             ref={canvasRef}
@@ -38,6 +44,7 @@ export const Canvas: React.FC<{
             width={width}
             onClick={handleCanvasClick}
             onMouseMove={handleCanvasMouseMove}
+            onContextMenu={handleContextMenu}
             style={{cursor: 'crosshair'}}
         />
     );
