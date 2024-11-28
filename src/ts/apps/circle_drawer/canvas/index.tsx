@@ -16,8 +16,14 @@ export const Canvas: React.FC<{
         canvasManager.clear();
         for (const item of content) item.draw(canvasManager);
     }, [content]);
+    const [menuPosition, setMenuPosition] = React.useState({x: 0, y: 0});
+    const [showMenu, setShowMenu] = React.useState(false);
 
     const handleCanvasClick = function (e: React.MouseEvent<HTMLCanvasElement>) {
+        if (showMenu) {
+            setShowMenu(false);
+            return;
+        }
         if (canvasManager === null) return;
 
         const [x, y] = canvasManager.getRelativeCoords(e.clientX, e.clientY);
@@ -33,19 +39,49 @@ export const Canvas: React.FC<{
 
     const handleContextMenu = function (e: React.MouseEvent<HTMLCanvasElement>) {
         e.preventDefault();
-        const coords = {x: e.clientX, y: e.clientY};
-        console.log('HERE I AM', coords);
+        if (canvasManager === null) return;
+
+        const [x, y] = canvasManager.getRelativeCoords(e.clientX, e.clientY);
+        setMenuPosition({x, y: y - width / 2});
+        setShowMenu(true);
+    };
+
+    const handleMenu = function () {
+        console.log('TODO');
+        setShowMenu(false);
     };
 
     return (
-        <canvas
-            ref={canvasRef}
-            height={width / 2}
-            width={width}
-            onClick={handleCanvasClick}
-            onMouseMove={handleCanvasMouseMove}
-            onContextMenu={handleContextMenu}
-            style={{cursor: 'crosshair'}}
-        />
+        <div style={{position: 'static'}}>
+            <canvas
+                ref={canvasRef}
+                height={width / 2}
+                width={width}
+                onClick={handleCanvasClick}
+                onMouseMove={handleCanvasMouseMove}
+                onContextMenu={handleContextMenu}
+                style={{cursor: 'crosshair'}}
+            />
+            {showMenu && (
+                <ul
+                    style={{
+                        position: 'relative',
+                        top: `${menuPosition.y}px`,
+                        left: `${menuPosition.x}px`,
+                        width: '150px',
+                        backgroundColor: 'white',
+                        border: '1px solid #ccc',
+                        listStyle: 'none',
+                        padding: '1px',
+                        boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
+                        zIndex: 1000,
+                    }}
+                >
+                    <li style={{padding: '5px 10px', cursor: 'pointer'}} onClick={handleMenu}>
+                        Adjust diameter...
+                    </li>
+                </ul>
+            )}
+        </div>
     );
 };

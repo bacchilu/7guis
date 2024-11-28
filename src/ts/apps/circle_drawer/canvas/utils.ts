@@ -14,7 +14,7 @@ export class CanvasManager {
 
     getRelativeCoords(x: number, y: number) {
         const rect = this.canvas.getBoundingClientRect();
-        return [x - rect.left, (y = y - rect.top)];
+        return [x - rect.left, y - rect.top];
     }
 
     drawCircle(x: number, y: number, radius: number, filled: boolean) {
