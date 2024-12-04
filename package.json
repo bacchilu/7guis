@@ -1,6 +1,6 @@
 {
   "name": "7guis",
-  "version": "5.1.1",
+  "version": "5.1.2",
   "description": "https://7guis.github.io/7guis/tasks",
   "source": "src/index.html",
   "browserslist": "defaults",
@@ -32,7 +32,7 @@
     "vueIndentScriptAndStyle": false
   },
   "devDependencies": {
-    "@types/react": "^18.3.12",
+    "@types/react": "^18.3.13",
     "@types/react-dom": "^18.3.1",
     "npm-check-updates": "^17.1.11",
     "parcel": "^2.13.2",
